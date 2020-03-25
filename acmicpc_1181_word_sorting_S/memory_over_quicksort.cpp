@@ -6,19 +6,24 @@ using namespace std;
 
 int N;
 
+// vecter for store words.
 vector <string> words;
 
+// compare function.
 bool cmp_word(string a, string b)
 {
-	char temp_a, temp_b;
+	char temp_a, temp_b; // use to compare one character
 
+	// compare size.
 	if (a.size() > b.size())
 		return true;
 	else if (a.size() < b.size())
 		return false;
 	
+	// min between a.size , b.size
 	int min = a.size() > b.size() ? b.size() : a.size();
 
+	// compare characters
 	for (int i = 0; i < min; i++)
 	{
 		temp_a = a[i];
@@ -29,25 +34,24 @@ bool cmp_word(string a, string b)
 		else if (temp_a < temp_b)
 			return false;
 	}
-
-	if (min == a.size())
-		return false;
-	else
-		return true;
 }
 
+// quick sort (String)
 void quick_sort(int start, int end)
 {
-	if (start == end)
+	if (start == end) // only one element. -> exit.
 		return;
 
-	string pivot = words[start];
+	string pivot = words[start]; // pivot = first element.
 
+	// vecter for store left, right elements
 	vector<string> left_;
 	vector<string> right_;
 
+	// position of pivot.
 	int position = start;
 
+	// compare and classify. Left, pivot, Right.
 	for (int i = start + 1; i <= end; i++)
 	{
 		if (cmp_word(pivot, words[i]) == true)
@@ -62,7 +66,7 @@ void quick_sort(int start, int end)
 	int iter_l = 0;
 	int iter_r = 0;
 
-	// swap.
+	// Sorting
 	for (int i = start; i <= end; i++)
 	{
 		if (i < position)
@@ -73,6 +77,7 @@ void quick_sort(int start, int end)
 			words[i] = pivot;
 	}
 
+	// recursion
 	if (position > start && position < end)
 	{
 		quick_sort(start, position - 1);
@@ -93,6 +98,7 @@ int main() {
 
 	string input_data;
 
+	// user input
 	for (int i = 0; i < N; i++)
 	{
 		cin >> input_data;
@@ -100,8 +106,10 @@ int main() {
 		words.push_back(input_data);
 	}
 
+	// sorting
 	quick_sort(0, N - 1);
 
+	// print
 	string pre_word;
 
 	cout << words[0] << "\n";
