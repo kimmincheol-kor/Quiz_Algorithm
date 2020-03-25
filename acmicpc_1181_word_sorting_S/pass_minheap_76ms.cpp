@@ -12,6 +12,7 @@ int N;
 
 vector <string> words;
 
+// make shortly : compare function
 bool cmp_word(string a, string b)
 {
 	if (a.size() == b.size())
