@@ -46,6 +46,7 @@ void check_gap()
 
 	/* calculatate gap */
 	int gap;
+
 	if (ability_start > ability_link)
 		gap = ability_start - ability_link;
 	else
@@ -69,7 +70,14 @@ void run(int num_needs)
 	/* Test the all of case */
 	for (int i = 1; i <= N; i++)
 	{
-		if (visited[i] == false)	// is that none team player ?
+		bool flag = false;
+
+		if (num_needs == N / 2)
+			flag = true;
+		else if (i > team_start.back())
+			flag = true;
+
+		if (visited[i] == false && flag == true)	// is that none team player ?
 		{
 			visited[i] = true;
 			team_start.push_back(i);	// push to start team.
