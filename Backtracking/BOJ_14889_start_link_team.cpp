@@ -9,8 +9,6 @@ int ability[21][21];	// store user input.
 
 bool visited[21];	// Use to check visited
 
-vector<int> team_start;
-
 int min_gap = 1000;
 
 /* Check gap point between two teams. */
@@ -20,37 +18,35 @@ void check_gap()
 	int ability_link = 0;	// link team's ability
 
 	vector<int> team_link;
+	vector<int> team_start;
 
-	/* make link team. */
+	/* make two teams. */
 	for (int i = 1; i <= N; i++)
 	{
 		if (visited[i] == false)
 			team_link.push_back(i);
+		else
+			team_start.push_back(i);
 	}
 
 	/* calculate ability point. */
 	for (int i = 0; i < N / 2; i++)
 	{
-		int mem_start = team_start[i];
-		int mem_link = team_link[i];
-
 		for (int j = 0; j < N / 2; j++)
 		{
 			if (i != j)
 			{
-				ability_start += ability[mem_start][team_start[j]];
-				ability_link += ability[mem_link][team_link[j]];
+				ability_start += ability[team_start[i]][team_start[j]];
+				ability_link += ability[team_link[i]][team_link[j]];
 			}
 		}
 	}
 
 	/* calculatate gap */
-	int gap;
+	int gap = ability_start - ability_link;
 
-	if (ability_start > ability_link)
-		gap = ability_start - ability_link;
-	else
-		gap = ability_link - ability_start;
+	if (gap < 0)
+		gap *= -1;
 
 	/* Is that min ? */
 	if (gap < min_gap)
@@ -58,7 +54,7 @@ void check_gap()
 }
 
 /* Function for Calculate minimum gap between two teams. */
-void run(int num_needs)
+void run(int num_needs, int start)
 {
 	if (num_needs == 0)	// start team has full member
 	{
@@ -68,24 +64,19 @@ void run(int num_needs)
 	}
 
 	/* Test the all of case */
-	for (int i = 1; i <= N; i++)
+	for (int i = start; i <= N; i++)
 	{
-		bool flag = false;
-
-		if (num_needs == N / 2)
-			flag = true;
-		else if (i > team_start.back())
-			flag = true;
-
-		if (visited[i] == false && flag == true)	// is that none team player ?
+		if (visited[i] == false)	// is that none team player ?
 		{
 			visited[i] = true;
-			team_start.push_back(i);	// push to start team.
 
-			run(num_needs - 1);	// pick next player.
+			run(num_needs - 1, i+1);	// pick next player.
+
+			/* make 108ms -> 12ms */
+			if (min_gap == 0)
+				return;
 
 			visited[i] = false;
-			team_start.pop_back();
 		}
 	}
 }
@@ -108,7 +99,7 @@ int main() {
 	}
 
 	/* Run */
-	run(N / 2);
+	run(N / 2, 1);
 
 	cout << min_gap;
 	
