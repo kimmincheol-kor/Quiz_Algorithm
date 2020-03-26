@@ -14,30 +14,10 @@ vector <string> words;
 
 bool cmp_word(string a, string b)
 {
-	char temp_a, temp_b;
-
-	if (a.size() > b.size())
-		return true;
-	else if (a.size() < b.size())
-		return false;
-	
-	int min = a.size() > b.size() ? b.size() : a.size();
-
-	for (int i = 0; i < min; i++)
-	{
-		temp_a = a[i];
-		temp_b = b[i];
-
-		if (temp_a > temp_b)
-			return true;
-		else if (temp_a < temp_b)
-			return false;
-	}
-
-	if (min == a.size())
-		return false;
+	if (a.size() == b.size())
+		return a > b;
 	else
-		return true;
+		return a.size() > b.size();
 }
 
 class Heap_min
