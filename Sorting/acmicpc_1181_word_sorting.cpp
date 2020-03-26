@@ -2,28 +2,27 @@
 #include <string>
 #include <vector>
 
+#define LEFT(i) i*2
+#define RIGHT(i) i*2+1
+#define PARENT(i) i/2
+
 using namespace std;
 
 int N;
 
-// vecter for store words.
 vector <string> words;
 
-// compare function.
 bool cmp_word(string a, string b)
 {
-	char temp_a, temp_b; // use to compare one character
+	char temp_a, temp_b;
 
-	// compare size.
 	if (a.size() > b.size())
 		return true;
 	else if (a.size() < b.size())
 		return false;
 	
-	// min between a.size , b.size
 	int min = a.size() > b.size() ? b.size() : a.size();
 
-	// compare characters
 	for (int i = 0; i < min; i++)
 	{
 		temp_a = a[i];
@@ -34,60 +33,109 @@ bool cmp_word(string a, string b)
 		else if (temp_a < temp_b)
 			return false;
 	}
+
+	if (min == a.size())
+		return false;
+	else
+		return true;
 }
 
-// quick sort (String)
-void quick_sort(int start, int end)
+class Heap_min
 {
-	if (start == end) // only one element. -> exit.
-		return;
+public:
+	vector <string> list;
+	int cnt = 0;
 
-	string pivot = words[start]; // pivot = first element.
-
-	// vecter for store left, right elements
-	vector<string> left_;
-	vector<string> right_;
-
-	// position of pivot.
-	int position = start;
-
-	// compare and classify. Left, pivot, Right.
-	for (int i = start + 1; i <= end; i++)
+	// Push Function.
+	void push(string new_data)
 	{
-		if (cmp_word(pivot, words[i]) == true)
+		int cur_position;
+
+		list.push_back(new_data);
+		cnt++;
+
+		cur_position = cnt;
+
+		while (cur_position > 1) // search Last -> First
 		{
-			left_.push_back(words[i]);
-			position++;
+			if (cmp_word(list[PARENT(cur_position)], list[cur_position]) == true) // need swap.
+			{
+				string temp = list[cur_position];
+				list[cur_position] = list[PARENT(cur_position)];
+				list[PARENT(cur_position)] = temp;
+
+				cur_position = PARENT(cur_position);
+			}
+			else // end of search
+				break;
 		}
-		else
-			right_.push_back(words[i]);
 	}
 
-	int iter_l = 0;
-	int iter_r = 0;
-
-	// Sorting
-	for (int i = start; i <= end; i++)
+	// Pop Function.
+	string pop()
 	{
-		if (i < position)
-			words[i] = left_[iter_l++];
-		else if (i > position)
-			words[i] = right_[iter_r++];
-		else
-			words[i] = pivot;
-	}
+		int cur_position = 1;
 
-	// recursion
-	if (position > start && position < end)
-	{
-		quick_sort(start, position - 1);
-		quick_sort(position + 1, end);
+		// swap
+		string result = list[1];
+		list[1] = list[cnt];
+		list[cnt] = result;
+
+		// pop
+		list.pop_back();
+		cnt--;
+
+		while (1)
+		{
+			if (LEFT(cur_position) <= cnt && RIGHT(cur_position) <= cnt) // exist LEFT, RIGHT
+			{
+				if (cmp_word(list[LEFT(cur_position)], list[RIGHT(cur_position)]) == false) // LEFT < RIGHT
+				{
+					if (cmp_word(list[LEFT(cur_position)], list[cur_position]) == false)
+					{
+						string temp = list[cur_position];
+						list[cur_position] = list[LEFT(cur_position)];
+						list[LEFT(cur_position)] = temp;
+
+						cur_position = LEFT(cur_position);
+					}
+					else
+						break;
+				}
+				else // LEFT > RIGHT
+				{
+					if (cmp_word(list[RIGHT(cur_position)], list[cur_position]) == false)
+					{
+						string temp = list[cur_position];
+						list[cur_position] = list[RIGHT(cur_position)];
+						list[RIGHT(cur_position)] = temp;
+
+						cur_position = RIGHT(cur_position);
+					}
+					else
+						break;
+				}
+
+
+			}
+			else if (LEFT(cur_position) <= cnt) // exist only LEFT
+			{
+				if (cmp_word(list[LEFT(cur_position)], list[cur_position]) == false) // LEFT < RIGHT
+				{
+					string temp = list[cur_position];
+					list[cur_position] = list[LEFT(cur_position)];
+					list[LEFT(cur_position)] = temp;
+				}
+
+				break;
+			}
+			else // none child
+				break;
+		}
+
+		return result;
 	}
-	else if (position == end)
-		quick_sort(start, position - 1);
-	else if (position == start)
-		quick_sort(start + 1, end);
-}
+};
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -96,31 +144,33 @@ int main() {
 
 	cin >> N;
 
+	// make min heap.
+	Heap_min my_heap;
+	my_heap.list.push_back("0"); // element [0] = null.
+
 	string input_data;
 
-	// user input
+	// user input to min heap.
 	for (int i = 0; i < N; i++)
 	{
 		cin >> input_data;
 
-		words.push_back(input_data);
+		my_heap.push(input_data);
 	}
 
-	// sorting
-	quick_sort(0, N - 1);
-
 	// print
-	string pre_word;
+	string pre_word = my_heap.pop();
 
-	cout << words[0] << "\n";
-	pre_word = words[0];
+	cout << pre_word << "\n";
 
-	for (int i = 0; i < N; i++)
+	for (int i = 1; i < N; i++)
 	{
-		if(pre_word != words[i])
-			cout << words[i] << "\n";
+		string temp = my_heap.pop();
 
-		pre_word = words[i];
+		if(pre_word != temp)
+			cout << temp << "\n";
+
+		pre_word = temp;
 	}
 	
 	return 0;
