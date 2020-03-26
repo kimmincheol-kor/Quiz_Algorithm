@@ -36,22 +36,57 @@ bool cmp_word(string a, string b)
 	}
 }
 
-// bubble sort. (String)
-void bubble_sort()
+// quick sort (String)
+void quick_sort(int start, int end)
 {
-	for (int i = N-1; i > 0; i--) // total cycle.
+	if (start == end) // only one element. -> exit.
+		return;
+
+	string pivot = words[start]; // pivot = first element.
+
+	// vecter for store left, right elements
+	vector<string> left_;
+	vector<string> right_;
+
+	// position of pivot.
+	int position = start;
+
+	// compare and classify. Left, pivot, Right.
+	for (int i = start + 1; i <= end; i++)
 	{
-		for (int j = 0; j < i; j++) // one cycle.
+		if (cmp_word(pivot, words[i]) == true)
 		{
-			if (cmp_word(words[j], words[j + 1]) == true)
-			{
-				// swap
-				string temp = words[j];
-				words[j] = words[j + 1];
-				words[j + 1] = temp;
-			}
+			left_.push_back(words[i]);
+			position++;
 		}
+		else
+			right_.push_back(words[i]);
 	}
+
+	int iter_l = 0;
+	int iter_r = 0;
+
+	// Sorting
+	for (int i = start; i <= end; i++)
+	{
+		if (i < position)
+			words[i] = left_[iter_l++];
+		else if (i > position)
+			words[i] = right_[iter_r++];
+		else
+			words[i] = pivot;
+	}
+
+	// recursion
+	if (position > start && position < end)
+	{
+		quick_sort(start, position - 1);
+		quick_sort(position + 1, end);
+	}
+	else if (position == end)
+		quick_sort(start, position - 1);
+	else if (position == start)
+		quick_sort(start + 1, end);
 }
 
 int main() {
@@ -63,7 +98,7 @@ int main() {
 
 	string input_data;
 
-	// user input.
+	// user input
 	for (int i = 0; i < N; i++)
 	{
 		cin >> input_data;
@@ -71,8 +106,8 @@ int main() {
 		words.push_back(input_data);
 	}
 
-	// sorting.
-	bubble_sort();
+	// sorting
+	quick_sort(0, N - 1);
 
 	// print
 	string pre_word;
