@@ -15,9 +15,7 @@ int main() {
 	cin >> N;
 
 	/* Processing */
-	int ** dp_result = new int * [N+1];
-	for (int i = 0; i <= N; i++)
-		dp_result[i] = new int[10];
+	int dp_result[2][10];
 
 	dp_result[1][0] = 0;
 	for (int i = 1; i <= 9; i++)
@@ -28,11 +26,11 @@ int main() {
 		for (int j = 0; j <= 9; j++)
 		{
 			if (j == 0)
-				dp_result[i][j] = dp_result[i - 1][j + 1] % DIV;
+				dp_result[i % 2][j] = dp_result[(i - 1) % 2][j + 1] % DIV;
 			else if (j == 9)
-				dp_result[i][j] = dp_result[i - 1][j - 1] % DIV;
+				dp_result[i % 2][j] = dp_result[(i - 1) % 2][j - 1] % DIV;
 			else
-				dp_result[i][j] = (dp_result[i - 1][j - 1] + dp_result[i - 1][j + 1]) % DIV;
+				dp_result[i % 2][j] = (dp_result[(i - 1) % 2][j - 1] + dp_result[(i - 1) % 2][j + 1]) % DIV;
 		}
 	}
 
@@ -40,7 +38,7 @@ int main() {
 	int sum = 0;
 	for (int j = 0; j <= 9; j++)
 	{
-		sum += dp_result[N][j];
+		sum += dp_result[N % 2][j];
 
 		sum = sum % DIV;
 	}
