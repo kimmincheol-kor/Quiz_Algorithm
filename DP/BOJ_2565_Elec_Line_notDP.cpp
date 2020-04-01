@@ -1,61 +1,15 @@
 #include <iostream>
-#include <string.h>
+#include <utility>
+#include <algorithm>
 #include <vector>
 
 using namespace std;
 
 int N;
-int max_start = 0;
 
-vector <int> v[501];
-
-int line[501];
-int num_cross[501];
-
-int total_cross = 0;
-int cnt_del = 0;
-
-/* count cross */
-void count_cross(int n)
+bool cmp_first(const pair<int, int> a, const pair<int, int> b)
 {
-	// larger number
-	for (int i = max_start; i > n; i--)
-	{
-		if (line[i] == 0)
-			continue;
-
-		if (line[i] < line[n])
-		{
-			num_cross[n] += 1;
-			num_cross[i] += 1;
-			total_cross += 2;
-
-			v[n].push_back(i);
-			v[i].push_back(i);
-		}
-	}
-}
-
-/* Delete Line */
-void del_line(int n)
-{
-	int num = num_cross[n];
-
-	for (int i = 0; i < num; i++)
-	{
-		int temp = v[n].back();
-		v[n].pop_back();
-		
-		if (num_cross[temp] != 0)
-		{
-			num_cross[n]--;
-			num_cross[temp]--;
-			total_cross -= 2;
-		}
-	}
-
-	line[n] = 0;
-	cnt_del += 1;
+	return a.first < b.first ? true : false;
 }
 
 /* BOJ 2565 */
@@ -66,49 +20,42 @@ int main() {
 
 	cin >> N;
 
-	int n_start, n_end;
-	
-	memset(line, 0, 501);
-	memset(num_cross, 0, 501);
-	
+	pair<int, int>* line = new pair<int, int>[N];
+
 	/* USER INPUT */
 	for (int i = 0; i < N; i++)
-	{
-		cin >> n_start >> n_end;
-
-		if (n_start > max_start)
-			max_start = n_start;
-		
-		line[n_start] = n_end;
-	}
+		cin >> line[i].first >> line[i].second;
 
 	/* Processing */
-	for (int i = 1; i <= max_start; i++)
-	{
-		if (line[i] != 0)
-			count_cross(i);
-	}
+	// sorting
+	sort(&line[0], &line[N], cmp_first);
 
-	while (total_cross != 0)
-	{
-		// fine max
-		int max_cross = 0;
-		int max_index = 0;
+	// LIS using vector
+	vector <int> lis;
+	lis.push_back(line[0].second);
 
-		for (int i = 1; i <= max_start; i++)
+	for (int i = 1; i < N; i++)
+	{
+		if (line[i].second > lis.back())			// increasing
+			lis.push_back(line[i].second);
+		else										// not increasing.
 		{
-			if (max_cross < num_cross[i])
+			// find low bound
+			for (int j = 0; j < lis.size(); j++)
 			{
-				max_cross = num_cross[i];
-				max_index = i;
+				if (lis[j] == line[i].second)
+					break;
+				else if (lis[j] > line[i].second)
+				{
+					lis[j] = line[i].second;
+					break;
+				}
 			}
 		}
-
-		// del line
-		del_line(max_index);
 	}
 
-	cout << cnt_del;
+	/* PRINT RESULT */
+	cout << N - lis.size();
 
 	return 0;
 }
