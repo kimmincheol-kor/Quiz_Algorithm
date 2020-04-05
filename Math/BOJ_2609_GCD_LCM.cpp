@@ -2,6 +2,14 @@
 
 using namespace std;
 
+int GCD(int maxx, int minn)
+{
+	if (minn == 0)
+		return maxx;
+	else
+		return GCD(minn, maxx%minn);
+}
+
 /* BOJ 2609 */
 int main() {
 	ios::sync_with_stdio(false);
@@ -10,35 +18,31 @@ int main() {
 
 	int N, M;
 
-	int min_num;
+	int min_, max_;
 
 	/* USER INPUT */
 	cin >> N >> M;
 
-	min_num = N < M ? N : M;
-	
-	/* Processing */
-	// GCD
-	for (int i = min_num; i > 0; i--)
+	if (N < M)
 	{
-		if (N % i == 0 && M % i == 0)
-		{
-			cout << i << "\n";
-			break;
-		}
+		min_ = N;
+		max_ = M;
+	}
+	else
+	{
+		min_ = M;
+		max_ = N;
 	}
 
+	/* Processing */
+	// GCD
+	int gcd = GCD(max_, min_);
+
 	// LCM
-	for (int i = 1; i <= N*M; i++)
-	{
-		if (i%N == 0 && i%M == 0)
-		{
-			cout << i;
-			break;
-		}
-	}
-	
+	int lcm = N * M / gcd;
+
 	/* PRINT RESULT */
-	
+	cout << gcd << "\n" << lcm;
+
 	return 0;
 }
