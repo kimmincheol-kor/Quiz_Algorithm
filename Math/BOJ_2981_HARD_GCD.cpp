@@ -2,6 +2,36 @@
 
 using namespace std;
 
+int GCD_stable(const int& a, const int& b)
+{
+	if (b == 0)
+		return a;
+	else
+		return GCD_stable(b, a % b);
+}
+
+int GCD(const int &a, const int &b)
+{
+	int temp_max;
+	int temp_min;
+
+	if (a > b)
+	{
+		temp_max = a;
+		temp_min = b;
+	}
+	else
+	{
+		temp_max = b;
+		temp_min = a;
+	}
+	
+	if (temp_min == 0)
+		return temp_max;
+	else
+		return GCD_stable(temp_min, temp_max % temp_min);
+}
+
 /* BOJ 2981 */
 int main() {
 	ios::sync_with_stdio(false);
@@ -9,8 +39,7 @@ int main() {
 	cout.tie(NULL);
 
 	int N;
-	int min_1 = 1000000001;
-	int min_2 = 1000000002;
+	int minn = 1000000001;
 
 	/* USER INPUT */
 	cin >> N;
@@ -21,35 +50,34 @@ int main() {
 	{
 		cin >> M[i];
 
-		if (M[i] < min_1)
-		{
-			min_2 = min_1;
-			min_1 = M[i];
-		}
-		else if(M[i] < min_2)
-		{
-			min_2 = M[i];
-		}
+		if (M[i] < minn)
+			minn = M[i];
 	}
+
+	bool* answer = new bool[minn+1];
 
 	/* Processing */
-	for (int i = 2; i <= min_2-min_1; i++)
+	int result;
+
+	for (int remain = 0; remain <= minn; remain++)
 	{
-		int test = M[0] % i;
-		for (int j = 1; j < N; j++)
+		result = GCD(M[0]-remain, M[1]-remain);
+
+		for (int i = 2; i < N; i++)
 		{
-			if (M[j] % i != test)
-			{
-				test = -1;
-				break;
-			}
+			result = GCD(result, M[i]-remain);
 		}
 
-		if (test != -1)
+		if (result > 1)
+			answer[result] = true;
+	}
+
+	/* PRINT RESULT */
+	for (int i = 2; i <= minn; i++)
+	{
+		if (answer[i] == true)
 			cout << i << " ";
 	}
-	
-	/* PRINT RESULT */
-	
+
 	return 0;
 }
