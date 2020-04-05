@@ -18,7 +18,7 @@ int main() {
 	min_num = N < M ? N : M;
 	
 	/* Processing */
-	// aliquot
+	// GCD
 	for (int i = min_num; i > 0; i--)
 	{
 		if (N % i == 0 && M % i == 0)
@@ -28,7 +28,7 @@ int main() {
 		}
 	}
 
-	// multiple
+	// LCM
 	for (int i = 1; i <= N*M; i++)
 	{
 		if (i%N == 0 && i%M == 0)
