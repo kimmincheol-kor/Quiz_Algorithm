@@ -1,23 +1,17 @@
-#include <iostream>
+#include <cstdio>
 
 using namespace std;
 
-int** board;
+int board[64][64];
 
-void QT(const int &n, const int &x, const int &y)
+void QT(const int& n, const int& x, const int& y)
 {
 	int standard = board[y][x];
 	bool flag = false;
 
-	if (n == 1)
+	for (int i = y; i < y + n; i++)
 	{
-		cout << standard;
-		return;
-	}
-
-	for (int i = y; i < y+n; i++)
-	{
-		for (int j = x; j < x+n; j++)
+		for (int j = x; j < x + n; j++)
 		{
 			if (board[i][j] != standard)
 			{
@@ -32,18 +26,18 @@ void QT(const int &n, const int &x, const int &y)
 
 	if (flag == false)
 	{
-		cout << standard;
+		printf("%d", standard);
 	}
 	else
 	{
-		cout << "(";
+		printf("\(");
 
 		QT(n / 2, x, y);
 		QT(n / 2, x + n / 2, y);
 		QT(n / 2, x, y + n / 2);
 		QT(n / 2, x + n / 2, y + n / 2);
 
-		cout << ")";
+		printf("\)");
 	}
 
 	return;
@@ -51,36 +45,31 @@ void QT(const int &n, const int &x, const int &y)
 
 /* BOJ 1992 */
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-
 	int N;
 
 	/* USER INPUT */
-	cin >> N;
-
-	board = new int* [N];
-	for (int i = 0; i < N; i++)
-		board[i] = new int[N];
+	scanf_s("%d", &N);
 
 	for (int i = 0; i < N; i++)
 	{
-		int line;
-		cin >> line;
-
 		for (int j = 0; j < N; j++)
 		{
-			board[i][N - 1 - j] = line % 10;
-			line /= 10;
+			scanf_s("%1d", &board[i][j]);
 		}
 	}
 
 	/* Processing */
-	QT(N,0,0);
+	QT(N, 0, 0);
 
 	/* PRINT RESULT */
 
 
 	return 0;
 }
+
+/*
+when using ios::sync_with_stdio(false),
+can't use both 'scanf' and 'cin'
+
+and 'cout', 'cin' is slower than 'printf', 'scanf'
+*/
