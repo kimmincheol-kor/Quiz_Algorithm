@@ -1,70 +1,53 @@
-#include <iostream>
-#include <stdlib.h>
+#define _CRT_SECURE_NO_WARNINGS
 
-#define MAX(a,b) a > b ? a : b
+#include <cstdio>
 
 using namespace std;
 
-int N;
-int W[101];
-int V[101];
+int N, K;
+int W[100];
+int V[100];
 
-int K;
+int dp[2][100001];
 
-int board[101][100001];
+/* BOJ 12865 */
+int main() {
 
-void DP_knapsack(int n)
-{
-	// n번째 물건을 챙길때, 안챙길때(이전 값) 값의 MAX
+	/* USER INPUT */
+	scanf("%d %d", &N, &K);
 
-	int remain;
+	for (int i = 0; i < N; i++)
+		scanf("%d %d", &W[i], &V[i]);
 
-	int include;
-	int exclude;
+	/* Processing */
+	dp[0][0] = 0;
+	dp[1][0] = 0;
 
-	if (n > N)
-		return;
-	else
+	int slide = 1;
+
+	for (int num = 0; num < N; num++) // number of using product
 	{
-		for (int bag = 1; bag <= K; bag++)
+		// 0 ~ W[num]-1 : Copy
+		for(int a = 0; a<W[num]; a++)
+			dp[slide % 2][a] = dp[(slide - 1) % 2][a];
+
+		// W[num] ~ K : Check Max
+		for (int a = W[num]; a <= K; a++)
 		{
-			if (W[n] <= bag) // 챙길 수 있다.
-			{
-				// 챙긴다.
-				remain = bag - W[n];
-				include = V[n] + board[n-1][remain];
-
-				// 안챙긴다.
-				exclude = board[n - 1][bag];
-
-				// 비교. -> 입력. -> 종료.
-				board[n][bag] = MAX(include, exclude);
-			}
-			else // 챙길 수 없다.
-			{
-				board[n][bag] = board[n - 1][bag];
-			}
+			if (dp[(slide - 1) % 2][a - W[num]] + V[num] > dp[(slide - 1) % 2][a])
+				dp[slide % 2][a] = dp[(slide - 1) % 2][a - W[num]] + V[num];
+			else
+				dp[slide % 2][a] = dp[(slide - 1) % 2][a];
 		}
 
-		DP_knapsack(n+1);
+		slide++;
 	}
-}
 
-int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+	/* PRINT RESULT */
+	if(dp[slide % 2][K] > dp[(slide-1) % 2][K])
+		printf("%d", dp[slide % 2][K]);
+	else
+		printf("%d", dp[(slide - 1) % 2][K]);
 
-	cin >> N >> K;
-
-	memset(board, 0, sizeof(board));
-
-	for (int i = 1; i <= N; i++)
-		cin >> W[i] >> V[i];
-
-	DP_knapsack(1);
-
-	cout << board[N][K] << "\n";
-	
 	return 0;
 }
