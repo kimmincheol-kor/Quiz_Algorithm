@@ -8,19 +8,21 @@ using namespace std;
 
 vector<int> og_list;
 
-int bin_search(int num, int start, int end)
+bool bin_search(int num, int start, int end)
 {
 	int mid = (start + end) / 2;
-	int result = 0;
-
-	if (num == og_list[mid])
-		return 1;
-	else if (end == start)
-		return num == og_list[end] ? 1 : 0;
-	else if (num < og_list[mid])
-		return bin_search(num, start, mid - 1);
-	else if (num > og_list[mid])
-		return bin_search(num, mid + 1, end);
+    
+    if(start > end)
+        return false;
+    else
+    {
+	    if (num == og_list[mid])
+		    return true;
+	    else if (num < og_list[mid])
+	    	return bin_search(num, start, mid - 1);
+	    else if (num > og_list[mid])
+		    return bin_search(num, mid + 1, end);
+    }
 }
 
 /* BOJ 1920 */
@@ -44,7 +46,10 @@ int main() {
 	for (int i = 0; i < M; i++)
 	{
 		scanf("%d", &temp);
-		printf("%d\n", bin_search(temp, 0, N - 1));
+        if(bin_search(temp, 0, N - 1))
+		    printf("1\n");
+        else
+            printf("0\n");
 	}
 
 	/* Processing */
