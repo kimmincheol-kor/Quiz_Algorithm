@@ -6,48 +6,15 @@
 
 using namespace std;
 
-int idx = 0;
 vector<int> og_list;
-vector<int> result;
-
-void bs(int num, int start, int end)
-{
-	int left = start;
-	int right = end;
-
-	while (left <= right)
-	{
-		int mid = (left + right) / 2;
-
-		if (og_list[mid] > num)
-			right = mid - 1;
-		else if (og_list[mid] < num)
-			left = mid + 1;
-		else
-		{
-			result[idx]++;
-
-			for (int i = 1; i <= mid - start; i++)
-				if (og_list[mid - i] == num)
-					result[idx]++;
-				else
-					break;
-
-			for (int i = 1; i <= end - mid; i++)
-				if (og_list[mid + i] == num)
-					result[idx]++;
-				else
-					break;
-
-			return;
-		}
-	}
-}
 
 /* BOJ 10816 */
 int main() {
 	int N, M;
 	int temp;
+
+	vector<int>::iterator low;
+	vector<int>::iterator high;
 
 	/* USER INPUT */
 	scanf("%d", &N);
@@ -65,11 +32,11 @@ int main() {
 	for (int i = 0; i < M; i++)
 	{
 		scanf("%d", &temp);
-		result.push_back(0);
 
-		bs(temp, 0, N - 1);
-		printf("%d ", result[idx]);
-		idx++;
+		low = lower_bound(og_list.begin(), og_list.end(), temp);
+		high = lower_bound(og_list.begin(), og_list.end(), temp + 1);
+
+		printf("%ld ", high - low);
 	}
 
 	/* Processing */
