@@ -1,0 +1,41 @@
+Sorting
+
+1. Selection Sort (선택 정렬)
+가장 작은 값을 찾아서(선택해서) 정렬한다.
+가장 원시적, 기초적
+Avg : O(N^2), Worst : O(N^2)
+
+2. Insertion Sort (삽입 정렬)
+각 값을 적절한 위치에 삽입한다.
+'필요한' 경우에만 정렬이 이루어진다.
+거의 정렬이 되어있는 데이터에 한해서 굉장히 빠르다.
+Avg : O(N^2), Worst : O(N^2)
+
+3. Bubble Sort (거품 정렬)
+인접해 있는 두 숫자끼리 비교해서 정렬한다.
+구현은 가장 쉽지만 가장 비효율적
+Avg : O(N^2), Worst : O(N^2)
+
+4. Quick Sort (퀵 정렬)
+대표적인 분할 정복 알고리즘
+Pivot을 기준으로 데이터를 반으로 나누는 동작을 반복.
+이미 정렬이 되어 있을 수록 효율이 떨어진다.
+Avg : O(N * log N), Worst : O(N^2)
+
+4. Merge Sort (병합 정렬)
+최악의 경우에도 N * log N을 보장한다.
+정확히 반으로 나누고 합치면서 정렬.
+기존 데이터 외에 메모리 영역이 필요하다 -> 메모리 비효율성
+Avg : O(N * log N), Worst : O(N * log N)
+
+5. Heap Sort (힙 정렬)
+힙 트리 구조를 이용한다. (완전 이진 트리)
+힙 생성 알고리즘 (Heapify Algorithm) 사용 - 자식 노드와 위치 변경
+병합 정렬의 메모리 비효율 문제를 해결.
+Stable Sort는 안된다.
+Avg : O(N * log N), Worst : O(N * log N)
+
+6. Counting Sort (계수 정렬)
+범위 조건이 있는 경우에 한해서 굉장히 빠른 알고리즘
+범위 내의 각 값의 개수를 카운트, 값의 크기에 맞게 정렬
+Avg : O(N), Worst : O(N)
