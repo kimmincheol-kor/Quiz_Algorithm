@@ -22,7 +22,7 @@ def solution(food_times, k):
     # (현재 최소 음식 시간 - 이전 음식 시간) * 현재 음식 개수
     while ((q[0][0] - pre_time) * num_food) <= (k - sum_time):
         now = heapq.heappop(q)[0] # now = 최소 음식 시간
-        sum_value += (now - pre_time) * num_food
+        sum_time += (now - pre_time) * num_food
         num_food -= 1
         pre_time = now
 
