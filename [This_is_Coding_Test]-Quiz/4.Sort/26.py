@@ -1,23 +1,17 @@
+import heapq
+
 n = int(input())
-arr = []
+heap = []
 for _ in range(n):
-    arr.append(int(input()))
+    heapq.heappush(heap, int(input()))
 
 answer = 0
-arr.sort(reverse=True)
 
-while True:
-    result = arr.pop() + arr.pop()
+for _ in range(n-1):
+    result = heapq.heappop(heap) + heapq.heappop(heap)
     answer += result
     
     # insert new card-set
-    for i in range(1, len(arr)+1):
-        idx = len(arr) - i
-        if arr[idx] >= result:
-            arr.insert(idx+1, result)
-            break
-
-    if len(arr) < 2:
-        break
+    heapq.heappush(heap, result)
 
 print(answer)
