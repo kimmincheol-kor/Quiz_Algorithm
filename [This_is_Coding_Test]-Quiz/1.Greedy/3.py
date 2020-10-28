@@ -1,17 +1,12 @@
-import sys
-
-data = list(sys.stdin.readline().rstrip())
-
-for i, val in enumerate(data):
-    data[i] = int(val)
+data = list(input())
 
 flag = data[0]
 cnt = 0
 
 # Count Different Number
-for i in data:
+for i in data[1:]:
     if(i != flag):
         flag = i
         cnt += 1
 
-print(cnt-1)
+print((cnt+1)//2)
