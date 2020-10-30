@@ -1,43 +1,34 @@
+import itertools as it
+
 def solution(N, M, Board):
+    chics = []
+    homes = []
 
-    chicken = []
-    house = {}
-
-    for i in range(0, N):
-        for j in range(0, N):
+    for i in range(N):
+        for j in range(N):
             if Board[i][j] == 1:
-                house[(i,j)] = [(-1,-1), 1000]
+                homes.append((i,j))
             if Board[i][j] == 2:
-                chicken.append((i,j))
+                chics.append([(i,j), []])
+    
+    for ch in chics:
+        i = ch[0][0]
+        j = ch[0][1]
 
-    for _ in range(M):
+        for home in homes:
+            ch[1].append(abs(i-home[0]) + abs(j-home[1]))
 
-        list_chicken_distance = []
+    combi_chic = it.combinations(chics, M)
+    answer = 999999
 
-        for chick in chicken:
+    for chs in combi_chic:
+        result = [999999] * len(homes)
+        for ch in chs:
+            for i in range(len(homes)):
+                result[i] = min(result[i], ch[1][i])
+        answer = min(answer, sum(result))
 
-            cur_city_distance = 0
-
-            for ho in house.keys():
-                distance = abs(chick[0] - ho[0]) + abs(chick[1] - ho[1])
-                if distance < house[ho][1]:
-                    cur_city_distance += distance
-                else:
-                    cur_city_distance += house[ho][1]
-
-            list_chicken_distance.append(cur_city_distance)
-
-        selected_idx = list_chicken_distance.index(min(list_chicken_distance))
-        selected_chicken = chicken[selected_idx]
-
-        for ho in house.keys():
-            distance = abs(selected_chicken[0] - ho[0]) + abs(selected_chicken[1] - ho[1])
-            if distance < house[ho][1]:
-                house[ho][0] = selected_chicken
-                house[ho][1] = distance
-
-    min_city_distance = [x[1] for x in house.values()]
-    return sum(min_city_distance)
+    return answer
 
 if __name__ == "__main__":
     N, M = map(int, input().split())
